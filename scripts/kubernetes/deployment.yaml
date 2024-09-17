@@ -1,0 +1,81 @@
+# Your Solution
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: deakin-book_catalog
+  labels:
+    app: deakin-book_catalog
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: deakin-book_catalog
+  template:
+    metadata:
+      labels:
+        app: deakin-book_catalog
+    spec:
+      containers:
+      - name: deakin-book_catalog
+        image: saipriyamvada21/book_catalog:latest
+        imagePullPolicy: IfNotPresent 
+        env:
+        - name: PORT
+          value: "4000"
+        - name: DATABASE_URL
+          value: postgresql://part5:UmveLzdhXrPJrlvfZ95a2i0vIZxwohwR@dpg-crk2ksbtq21c73a99jhg-a.oregon-postgres.render.com/part_5
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: deakin-book_catalog
+spec:
+  selector:
+    app: deakin-book_catalog
+  type: LoadBalancer
+  ports:
+    - protocol: TCP
+      port: 31000
+      targetPort: 4000
+
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: deakin-inventory
+  labels:
+    app: deakin-inventory
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: deakin-inventory
+  template:
+    metadata:
+      labels:
+        app: deakin-inventory
+    spec:
+      containers:
+      - name: deakin-inventory
+        image: saipriyamvada21/inventory_management:latest
+        imagePullPolicy: IfNotPresent 
+        env:
+        - name: PORT
+          value: "5000"
+        - name: DATABASE_URL
+          value: postgresql://part5:UmveLzdhXrPJrlvfZ95a2i0vIZxwohwR@dpg-crk2ksbtq21c73a99jhg-a.oregon-postgres.render.com/part_5
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: deakin-inventory
+spec:
+  selector:
+    app: deakin-inventory
+  type: LoadBalancer
+  ports:
+    - protocol: TCP
+      port: 32000
+      targetPort: 5000
