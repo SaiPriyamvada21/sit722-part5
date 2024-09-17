@@ -1,7 +1,11 @@
-variable "resource_group_name" {
-  default = "library-resources"
+variable app_name {
+  default = "priya"
 }
 
-variable "location" {
-  default = "East US"
+variable location {
+  default = "australiasoutheast"
+}
+
+variable kubernetes_version {    
+  default = "1.30.0"
 }
