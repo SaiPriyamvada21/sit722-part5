@@ -12,6 +12,12 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v2
+    
+    - name: Set Executable Permissions
+      run: |
+        chmod +x scripts/build-image.sh
+        chmod +x scripts/push-image.sh
+        chmod +x scripts/deploy.sh
 
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v1
