@@ -11,13 +11,4 @@ terraform {
 
 provider "azurerm" {
   features {}
-
-
-
-variable "6241e51c-c2f5-4ed1-98c5-16824bbdeafa" {
-  description = "deakinuni"
-  type        = string
 }
-
-}
-
