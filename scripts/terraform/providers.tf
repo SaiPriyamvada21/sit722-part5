@@ -13,10 +13,11 @@ provider "azurerm" {
   features {}
 
 
-  # Required for Service Principal Authentication
-  subscription_id = var.subscription_id
-  client_id       = var.client_id
-  client_secret   = var.client_secret
-  tenant_id       = var.tenant_id
+
+variable "6241e51c-c2f5-4ed1-98c5-16824bbdeafa" {
+  description = "deakinuni"
+  type        = string
+}
+
 }
 
