@@ -16,11 +16,12 @@ jobs:
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v1
 
-    - name: Build and push Docker images
-      run: |
-        bash build-image.sh
-        bash push-image.sh
+    - name: Build Docker Images
+      run: ./scripts/build-image.sh
 
+    - name: Push Docker Images
+      run: ./scripts/push-image.sh
+  
   deploy:
     needs: build
     runs-on: ubuntu-latest
@@ -39,4 +40,4 @@ jobs:
       run: terraform apply -auto-approve
 
     - name: Deploy Kubernetes resources
-      run: bash deploy.sh
+      run: ./scripts/deploy.sh
