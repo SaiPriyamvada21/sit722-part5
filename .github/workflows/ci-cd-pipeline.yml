@@ -28,26 +28,70 @@ jobs:
     - name: Push Docker Images
       run: ./scripts/push-image.sh
   
-  deploy:
-    needs: build
+  # deploy:
+  #   needs: build
+  #   runs-on: ubuntu-latest
+
+  #   steps:
+  #   - name: Checkout code
+  #     uses: actions/checkout@v3
+
+  # #   - name: Set up Terraform
+  # #     uses: hashicorp/setup-terraform@v2
+  # #     with:
+  # #       terraform_version: 1.4.0
+
+  # #   - name: Terraform init
+  # #     run: terraform init
+  # #     working-directory: ./scripts/terraform/
+
+  # #   - name: Terraform apply
+  # #     run: terraform apply -auto-approve
+  # #     working-directory: ./scripts/terraform/
+
+  # #   - name: Deploy Kubernetes resources
+  # #     run: ./scripts/deploy.sh
+
+  jobs:
+  terraform:
+    name: Terraform Init, Plan, and Apply
     runs-on: ubuntu-latest
 
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v3
+    # Environment variables for Terraform and Azure
+    env:
+      ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
+      ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
+      ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
+      ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
 
-    - name: Set up Terraform
+    steps:
+    # Step 1: Checkout the repository
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    # Step 2: Login to Azure
+    - name: Azure Login
+      uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+    # Step 3: Set up Terraform CLI
+    - name: Setup Terraform
       uses: hashicorp/setup-terraform@v2
       with:
-        terraform_version: 1.4.0
+        terraform_version: 1.5.6
 
-    - name: Terraform init
+    # Step 4: Terraform Init (initializes the working directory)
+    - name: Terraform Init
+      working-directory: ./scripts/terraform # Replace with your folder path
       run: terraform init
-      working-directory: ./scripts/terraform/
 
-    - name: Terraform apply
+    # Step 5: Terraform Plan (show changes without applying)
+    - name: Terraform Plan
+      working-directory: ./scripts/terraform
+      run: terraform plan
+
+    # Step 6: Terraform Apply (apply changes if required)
+    - name: Terraform Apply
+      working-directory: ./scripts/terraform
       run: terraform apply -auto-approve
-      working-directory: ./scripts/terraform/
-
-    - name: Deploy Kubernetes resources
-      run: ./scripts/deploy.sh
