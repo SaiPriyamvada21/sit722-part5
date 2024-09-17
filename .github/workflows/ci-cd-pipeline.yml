@@ -52,7 +52,7 @@ jobs:
   # #   - name: Deploy Kubernetes resources
   # #     run: ./scripts/deploy.sh
 
-  jobs:
+  deploy:
   terraform:
     name: Terraform Init, Plan, and Apply
     runs-on: ubuntu-latest
