@@ -54,7 +54,7 @@ jobs:
 
     - name: Terraform Init
       working-directory: ./scripts/terraform
-      run: terraform init -upgrade
+      run: terraform init 
 
     - name: Terraform Plan
       working-directory: ./scripts/terraform

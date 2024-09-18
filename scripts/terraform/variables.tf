@@ -1,5 +1,5 @@
 variable app_name {
-  default = "priya"
+  default = "priyanew"
 }
 
 variable location {
@@ -9,7 +9,5 @@ variable location {
 variable kubernetes_version {    
   default = "1.30.0"
 }
-variable "subscription_id" {
-  type = string
-}
+
 
