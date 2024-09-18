@@ -106,12 +106,7 @@ jobs:
         run: ./scripts/build-image.sh
 
       # Publish Docker image
-      - name: Publish Docker image
-        env:
-          CONTAINER_REGISTRY: ${{ secrets.CONTAINER_REGISTRY }}
-          VERSION: ${{ github.sha }}
-          REGISTRY_UN: ${{ secrets.REGISTRY_UN }}
-          REGISTRY_PW: ${{ secrets.REGISTRY_PW }}
+      - name: Publish
         run: ./scripts/push-image.sh
 
 
