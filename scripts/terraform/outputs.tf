@@ -1,24 +1,21 @@
 output "acr_login_url" {
-  value = azurerm_container_registry.container_registry.login_server
-  description = "The login server URL for the ACR."
+  description = "The login URL of the Azure Container Registry"
+  value       = azurerm_container_registry.example.login_server
 }
 
 output "acr_username" {
-  value = azurerm_container_registry.container_registry.admin_username
-  description = "The admin username for the ACR."
+  description = "The username for the Azure Container Registry"
+  value       = azurerm_container_registry.example.admin_username
 }
 
 output "acr_password" {
-  value = azurerm_container_registry.container_registry.admin_password
-  # Ensure sensitive output for security
-  sensitive = true  
-  description = "The admin password for the ACR."
+  description = "The password for the Azure Container Registry"
+  value       = azurerm_container_registry.example.admin_password
+  sensitive   = true
 }
 
-# Outputs for Azure Kubernetes Services (AKS)
 output "aks_kubeconfig" {
-  value       = base64encode(azurerm_kubernetes_cluster.cluster.kube_config_raw)
-  # Ensure sensitive output for security
+  description = "The kubeconfig for the Azure Kubernetes Service cluster"
+  value       = azurerm_kubernetes_cluster.example.kube_config.0.raw_kube_config
   sensitive   = true
-  description = "The kubeconfig for AKS in base64-encoded format."
 }
