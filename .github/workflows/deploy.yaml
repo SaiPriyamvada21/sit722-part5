@@ -12,10 +12,9 @@ on:
   workflow_dispatch: 
 
 jobs:
-
   deploy:
     runs-on: ubuntu-latest
-    
+
     env:
       VERSION: ${{ github.sha }}
 
@@ -48,7 +47,7 @@ jobs:
         uses: azure/login@v2
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
-           
+
       # Set up kubectl
       - name: Set up kubectl
         uses: tale/kubectl-action@v1
@@ -56,6 +55,7 @@ jobs:
           base64-kube-config: ${{ secrets.KUBE_CONFIG_BASE64 }}
           kubectl-version: v1.24.2
 
+      # Get Terraform Outputs
       - name: Get Terraform Outputs
         id: outputs
         working-directory: ./scripts/terraform
@@ -65,57 +65,63 @@ jobs:
           echo "acr_password=$(terraform output -raw acr_password | grep -v "::debug")" >> $GITHUB_ENV
           echo "aks_kubeconfig=$(terraform output -raw aks_kubeconfig | grep -v "::debug")" >> $GITHUB_ENV
 
-    # Step 8: Install GitHub CLI
-    - name: Install GitHub CLI
-      run: sudo apt-get install gh
+      # Install GitHub CLI
+      - name: Install GitHub CLI
+        run: |
+          curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo tee /usr/share/keyrings/githubcli-archive-keyring.gpg > /dev/null
+          echo "deb [arch=amd64 signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null
+          sudo apt update
+          sudo apt install gh
 
-    # Step 9: Authenticate GitHub CLI
-    - name: Authenticate GitHub CLI
-      run: |
-        echo "${{ secrets.SECRETS_MODIFY_TOKEN }}" | gh auth login --with-token
+      # Authenticate GitHub CLI
+      - name: Authenticate GitHub CLI
+        run: |
+          echo "${{ secrets.SECRETS_MODIFY_TOKEN }}" | gh auth login --with-token
 
-    # Step 10: Create GitHub Secrets from Outputs
-    - name: Create GitHub Secrets
-      run: |
-        echo "Creating or updating secrets in GitHub repository"
+      # Create GitHub Secrets from Outputs
+      - name: Create GitHub Secrets
+        run: |
+          echo "Creating or updating secrets in GitHub repository"
+          gh secret set CONTAINER_REGISTRY -b "${{ env.acr_login_url }}"
+          gh secret set REGISTRY_UN -b "${{ env.acr_username }}"
+          gh secret set REGISTRY_PW -b "${{ env.acr_password }}"
+          gh secret set KUBE_CONFIG -b "${{ env.aks_kubeconfig }}"
 
-        gh secret set CONTAINER_REGISTRY -b "${{ env.acr_login_url }}"
-        gh secret set REGISTRY_UN -b "${{ env.acr_username }}"
-        gh secret set REGISTRY_PW -b "${{ env.acr_password }}"
-        gh secret set KUBE_CONFIG -b "${{ env.aks_kubeconfig }}"
-     
-
+      # Set up Docker
       - name: Set up Docker
         uses: docker/setup-buildx-action@v2
 
+      # Install Docker Compose
       - name: Install Docker Compose
         run: |
           sudo curl -L "https://github.com/docker/compose/releases/download/$(curl -s https://api.github.com/repos/docker/compose/releases/latest | jq -r .tag_name)/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
           sudo chmod +x /usr/local/bin/docker-compose
 
-      # Builds the Docker image.
+      # Build Docker image
       - name: Build
         env:
           CONTAINER_REGISTRY: ${{ secrets.CONTAINER_REGISTRY }}
           VERSION: ${{ github.sha }}
         run: ./scripts/build-image.sh
 
-      # Publishes the Docker image to the container registry.
+      # Publish Docker image
       - name: Publish
         env:
           CONTAINER_REGISTRY: ${{ secrets.CONTAINER_REGISTRY }}
           VERSION: ${{ github.sha }}
         run: ./scripts/push-image.sh
-      
-      # Expands the configuration template and deploys the microservice.
+
+      # Deploy the microservice
       - name: Deploy
         env:
           CONTAINER_REGISTRY: ${{ secrets.CONTAINER_REGISTRY }}
           VERSION: ${{ github.sha }}
         run: ./scripts/deploy.sh
 
+      # Get Kubernetes Services
       - name: Get Kubernetes Services
         run: kubectl get services
 
+      # Get Kubernetes Pods
       - name: Get Kubernetes Pods
         run: kubectl get pods
