@@ -55,16 +55,15 @@ jobs:
         with:
           base64-kube-config: ${{ secrets.KUBE_CONFIG_BASE64 }}
           kubectl-version: v1.24.2
-       
-       
+
       - name: Get Terraform Outputs
-      id: outputs
-      working-directory: ./scripts/terraform
-      run: |
-        echo "acr_login_url=$(terraform output -raw acr_login_url | grep -v "::debug")" >> $GITHUB_ENV
-        echo "acr_username=$(terraform output -raw acr_username | grep -v "::debug")" >> $GITHUB_ENV
-        echo "acr_password=$(terraform output -raw acr_password | grep -v "::debug")" >> $GITHUB_ENV
-        echo "aks_kubeconfig=$(terraform output -raw aks_kubeconfig | grep -v "::debug")" >> $GITHUB_ENV
+        id: outputs
+        working-directory: ./scripts/terraform
+        run: |
+          echo "acr_login_url=$(terraform output -raw acr_login_url | grep -v "::debug")" >> $GITHUB_ENV
+          echo "acr_username=$(terraform output -raw acr_username | grep -v "::debug")" >> $GITHUB_ENV
+          echo "acr_password=$(terraform output -raw acr_password | grep -v "::debug")" >> $GITHUB_ENV
+          echo "aks_kubeconfig=$(terraform output -raw aks_kubeconfig | grep -v "::debug")" >> $GITHUB_ENV
 
     # Step 8: Install GitHub CLI
     - name: Install GitHub CLI
