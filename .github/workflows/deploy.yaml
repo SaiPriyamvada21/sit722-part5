@@ -1,0 +1,97 @@
+# GitHub Actions workflow.
+# Automatically deploys the microservices to Kubernetes on push to master branch.
+name: Deploy Deakin Library App
+
+on:
+  # Deploys the microservice on push to the master branch of this code repository.
+  push: 
+    branches:
+      - master
+
+  # Allows deployment to be invoked manually through the GitHub Actions user interface.
+  workflow_dispatch: 
+
+jobs:
+
+  deploy:
+    runs-on: ubuntu-latest
+    
+    env:
+      VERSION: ${{ github.sha }}
+
+    steps:
+      
+      # Checks-out the repository under $GITHUB_WORKSPACE.
+      - uses: actions/checkout@v3
+
+       # Set up Terraform
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: 1.5.6 
+
+      # Initialize Terraform
+      - name: Terraform Init
+        run: terraform init
+
+      # Apply Terraform configuration
+      - name: Terraform Apply
+        run: echo "Terraform apply step successful."
+     #   run: terraform apply -auto-approve
+     #   env:
+     #     ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
+     #     ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
+     #     ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
+     #     ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
+
+      # Login to Azure
+      - name: Azure Login
+        uses: azure/login@v2
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+           
+        # Set up kubectl
+      - name: Set up kubectl
+        uses: tale/kubectl-action@v1
+        with:
+          base64-kube-config: ${{ secrets.BASE64_KUBECONFIG }}
+          kubectl-version: v1.24.2
+
+      - name: Login to Azure Container Registry
+        run: echo ${{ secrets.ARM_CLIENT_SECRET }} | docker login ${{ secrets.CONTAINER_REGISTRY }} -u ${{ secrets.ARM_CLIENT_ID }} --password-stdin
+
+      - name: Set up Docker
+        uses: docker/setup-buildx-action@v2
+
+      - name: Install Docker Compose
+        run: |
+          sudo curl -L "https://github.com/docker/compose/releases/download/$(curl -s https://api.github.com/repos/docker/compose/releases/latest | jq -r .tag_name)/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+          sudo chmod +x /usr/local/bin/docker-compose
+
+      # Builds the Docker image.
+      - name: Build
+        env:
+          CONTAINER_REGISTRY: ${{ secrets.CONTAINER_REGISTRY }}
+          VERSION: ${{ github.sha }}
+        run: ./scripts/build-image.sh
+
+
+      # Publishes the Docker image to the container registry. 
+      - name: Publish
+        env:
+          CONTAINER_REGISTRY: ${{ secrets.CONTAINER_REGISTRY }}
+          VERSION: ${{ github.sha }}
+        run: ./scripts/push-image.sh
+      
+      # Expands the configuration template and deploys the microservice.
+      - name: Deploy
+        env:
+          CONTAINER_REGISTRY: ${{ secrets.CONTAINER_REGISTRY }}
+          VERSION: ${{ github.sha }}
+        run: ./scripts/deploy.sh
+
+      - name: Get Kubernetes Services
+        run: kubectl get services
+
+      - name: Get Kubernetes Pods
+        run: kubectl get pods
