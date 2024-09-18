@@ -106,10 +106,7 @@ jobs:
         run: ./scripts/build-image.sh
 
       # Publish Docker image
-      - name: Publish
-        env:
-          CONTAINER_REGISTRY: ${{ secrets.CONTAINER_REGISTRY }}
-          VERSION: ${{ github.sha }}
+       - name: Publish
         run: ./scripts/push-image.sh
 
       # Deploy the microservice
