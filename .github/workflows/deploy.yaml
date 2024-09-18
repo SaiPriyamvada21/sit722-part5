@@ -54,7 +54,7 @@ jobs:
       - name: Set up kubectl
         uses: tale/kubectl-action@v1
         with:
-          base64-kube-config: ${{ secrets.BASE64_KUBECONFIG }}
+          base64-kube-config: ${{ secrets.KUBE_CONFIG_BASE64 }}
           kubectl-version: v1.24.2
 
       - name: Login to Azure Container Registry
