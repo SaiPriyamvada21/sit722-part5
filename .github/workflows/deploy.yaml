@@ -20,9 +20,7 @@ jobs:
       VERSION: ${{ github.sha }}
 
     steps:
-      
-      # Checks-out the repository under $GITHUB_WORKSPACE.
-    - uses: actions/checkout@v3
+      - uses: actions/checkout@v3
 
        # Set up Terraform
       - name: Set up Terraform
