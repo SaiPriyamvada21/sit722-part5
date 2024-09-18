@@ -1,4 +1,7 @@
-# Builds a Docker image.
-# ./scripts/build-image.sh
+set -u # or set -o nounset
+: "$CONTAINER_REGISTRY"
+: "$VERSION"
+: "$NAME"
+: "$DIRECTORY"
 
-docker-compose build
+docker build -t $CONTAINER_REGISTRY/$NAME:$VERSION --file ./$DIRECTORY/Dockerfile ./$DIRECTORY

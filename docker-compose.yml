@@ -3,12 +3,12 @@
 version: '3'
 services:
 
-  deakin-library:
-    image: ${CONTAINER_REGISTRY}/book_catalog:${VERSION}
+  deakin-book_catalog:
+    image: deakin-book_catalog
     build: 
       context: ./book_catalog
       dockerfile: Dockerfile
-    container_name: deakin-library
+    container_name: deakin-book_catalog
     ports:
      - "8000:8000"
     environment:
@@ -17,7 +17,7 @@ services:
     restart: "no"
 
   deakin-inventory:
-    image: ${CONTAINER_REGISTRY}/inventory_management:${VERSION}
+    image: deakin-inventory
     build: 
       context: ./inventory_management
       dockerfile: Dockerfile
