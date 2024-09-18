@@ -31,7 +31,7 @@ jobs:
       # Initialize Terraform
       - name: Terraform Init
         working-directory: ./scripts/terraform
-        run: terraform init
+        run: terraform init -upgrade
 
       # Apply Terraform configuration
       - name: Terraform Apply
