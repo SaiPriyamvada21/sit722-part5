@@ -1,5 +1,6 @@
-# Your Solution
-#!/bin/bash
-set -e
-kubectl apply -f scripts/kubernetes/deployment.yaml
-kubectl apply -f scripts/kubernetes/service.yaml
+set -u # or set -o nounset
+: "$CONTAINER_REGISTRY"
+: "$NAME"
+: "$VERSION"
+
+envsubst < ./scripts/${NAME}.yaml | kubectl apply -f -

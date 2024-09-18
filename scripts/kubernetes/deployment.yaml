@@ -18,7 +18,7 @@ spec:
     spec:
       containers:
       - name: deakin-book_catalog
-        image: saipriyamvada21/book_catalog:latest
+        image: $CONTAINER_REGISTRY/book_catalog:$VERSION
         imagePullPolicy: IfNotPresent 
         env:
         - name: PORT
@@ -59,7 +59,7 @@ spec:
     spec:
       containers:
       - name: deakin-inventory
-        image: saipriyamvada21/inventory_management:latest
+        image: $CONTAINER_REGISTRY/inventory_management:$VERSION
         imagePullPolicy: IfNotPresent 
         env:
         - name: PORT

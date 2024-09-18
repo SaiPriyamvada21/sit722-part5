@@ -1,5 +1,7 @@
-# Your Solution
-#!/bin/bash
-set -e 
-docker build -t saipriyamvada21/book_catalog:latest ./book_catalog
-docker build -t saipriyamvada21/inventory_management:latest ./inventory_management
+set -u # or set -o nounset
+: "$CONTAINER_REGISTRY"
+: "$VERSION"
+: "$NAME"
+: "$DIRECTORY"
+
+docker build -t $CONTAINER_REGISTRY/$NAME:$VERSION --file ./$DIRECTORY/Dockerfile ./$DIRECTORY

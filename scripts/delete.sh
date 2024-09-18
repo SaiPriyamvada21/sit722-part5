@@ -1,4 +1,5 @@
-# Your Solution
-#!/bin/bash
-kubectl delete -f k8s/deployment.yaml
-kubectl delete -f k8s/service.yaml
+
+set -u # or set -o nounset
+: "$NAME"
+
+envsubst < ./scripts/${NAME}.yaml | kubectl delete -f -
