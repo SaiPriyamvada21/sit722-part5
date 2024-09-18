@@ -106,7 +106,7 @@ jobs:
         run: ./scripts/build-image.sh
 
       # Publish Docker image
-       - name: Publish
+      - name: Publish
         run: ./scripts/push-image.sh
 
       # Deploy the microservice
