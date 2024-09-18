@@ -9,9 +9,6 @@ variable location {
   default = "australiaeast"
 }
 
-variable "aks_name" {
-  description = "The name of the Azure Kubernetes Service cluster"
-  type        = string
+variable kubernetes_version {   
+  default = "1.30.3" 
 }
-
-# Add other variables as needed for your infrastructure
