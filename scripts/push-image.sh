@@ -1,9 +1,6 @@
-set -u # or set -o nounset
-: "$CONTAINER_REGISTRY"
-: "$VERSION"
-: "$REGISTRY_UN"
-: "$REGISTRY_PW"
-: "$NAME"
+# Publishes a Docker image.
+#./scripts/push-image.sh
 
-echo $REGISTRY_PW | docker login $CONTAINER_REGISTRY --username $REGISTRY_UN --password-stdin
-docker push $CONTAINER_REGISTRY/$NAME:$VERSION
+#echo $REGISTRY_PW | docker login $CONTAINER_REGISTRY --username $REGISTRY_UN --password-stdin
+docker push ${CONTAINER_REGISTRY}/book_catalog:${VERSION}
+docker push ${CONTAINER_REGISTRY}/inventory_management:${VERSION}

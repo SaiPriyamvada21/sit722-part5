@@ -2,19 +2,19 @@
 
 variable app_name {
   default = "priya5"
+# Sets global variables for this Terraform project.
+
+variable app_name {
+  default = "priya5"
 }
 
-variable "location" {
-  description = "The Azure region where resources will be created"
+variable location {
+  default = "australiaeast"
+}
+
+variable "aks_name" {
+  description = "The name of the Azure Kubernetes Service cluster"
   type        = string
-  default     = "East US" # Adjust this as needed
 }
 
-variable "acr_name" {
-  description = "The name of the Azure Container Registry"
-  type        = string
-}
-
-variable kubernetes_version { 
-  default = "1.30.3"   
-}
+# Add other variables as needed for your infrastructure

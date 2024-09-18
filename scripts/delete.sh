@@ -1,5 +1,4 @@
+# Destroys the microservices on Kubernetes.
+# ./scripts/delete.sh
 
-set -u # or set -o nounset
-: "$NAME"
-
-envsubst < ./scripts/${NAME}.yaml | kubectl delete -f -
+envsubst < ./scripts/kubernetes/deploy.yaml | kubectl delete -f -

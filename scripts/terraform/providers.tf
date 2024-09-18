@@ -1,3 +1,5 @@
+# Initialises Terraform providers and sets their version numbers.
+
 terraform {
   required_providers {
     azurerm = {

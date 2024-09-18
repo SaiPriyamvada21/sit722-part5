@@ -18,11 +18,11 @@ spec:
     spec:
       containers:
       - name: deakin-book_catalog
-        image: $CONTAINER_REGISTRY/book_catalog:$VERSION
+        image: ${CONTAINER_REGISTRY}/book_catalog:${VERSION}
         imagePullPolicy: IfNotPresent 
         env:
         - name: PORT
-          value: "4000"
+          value: "8000"
         - name: DATABASE_URL
           value: postgresql://part5:UmveLzdhXrPJrlvfZ95a2i0vIZxwohwR@dpg-crk2ksbtq21c73a99jhg-a.oregon-postgres.render.com/part_5
 ---
@@ -36,8 +36,8 @@ spec:
   type: LoadBalancer
   ports:
     - protocol: TCP
-      port: 31000
-      targetPort: 4000
+      port: 81000
+      targetPort: 8000
 
 
 ---
@@ -59,11 +59,11 @@ spec:
     spec:
       containers:
       - name: deakin-inventory
-        image: $CONTAINER_REGISTRY/inventory_management:$VERSION
+        image: ${CONTAINER_REGISTRY}/inventory_management:${VERSION}
         imagePullPolicy: IfNotPresent 
         env:
         - name: PORT
-          value: "5000"
+          value: "8000"
         - name: DATABASE_URL
           value: postgresql://part5:UmveLzdhXrPJrlvfZ95a2i0vIZxwohwR@dpg-crk2ksbtq21c73a99jhg-a.oregon-postgres.render.com/part_5
 ---
@@ -77,5 +77,5 @@ spec:
   type: LoadBalancer
   ports:
     - protocol: TCP
-      port: 32000
-      targetPort: 5000
+      port: 8000
+      targetPort: 8000
