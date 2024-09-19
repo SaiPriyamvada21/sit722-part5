@@ -107,7 +107,7 @@ jobs:
 
       - name: Push Docker images
         env:
-          CONTAINER_REGISTRY: ${{ env.CONTAINER_REGISTRY }}
+          CONTAINER_REGISTRY: ${{ secrets.CONTAINER_REGISTRY }}
           VERSION: ${{ github.sha }}
         run: ./scripts/push-image.sh
 
