@@ -33,8 +33,3 @@ resource "azurerm_role_assignment" "role_assignment" {
   skip_service_principal_aad_check = true
 }
 
-# Output the Kubernetes cluster kubeconfig
-output "kubeconfig" {
-  value = azurerm_kubernetes_cluster.cluster.kube_config_raw
-  sensitive = true
-}

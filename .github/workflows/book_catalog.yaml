@@ -4,7 +4,7 @@
 # Automatically deploys the Node.js microservice to Kubernetes on push to the main branch.
 #
 
-name: Deploy Deakin Library (book_catalog)
+name: Deploy Deakin book_catalog
 
 on:
   #
@@ -32,7 +32,7 @@ jobs:
       REGISTRY_UN: ${{ secrets.REGISTRY_UN }}
       REGISTRY_PW: ${{ secrets.REGISTRY_PW  }}
       DATABASE_URL: ${{ secrets.DATABASE_URL  }}
-      NAME: deakin-library
+      NAME: deakin-book_catalog
       DIRECTORY: book_catalog
 
     steps:

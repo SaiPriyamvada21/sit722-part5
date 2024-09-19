@@ -9,7 +9,3 @@ resource "azurerm_container_registry" "container_registry" {
   sku                 = "Basic"
 }
 
-# Output the ACR login server
-output "acr_login_server" {
-  value = azurerm_container_registry.container_registry.login_server
-}

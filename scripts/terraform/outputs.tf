@@ -1,4 +1,3 @@
-# Outputs for Azure Container Registry (ACR)
 output "acr_login_url" {
   value = azurerm_container_registry.container_registry.login_server
   description = "The login server URL for the ACR."
