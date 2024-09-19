@@ -1,12 +1,4 @@
-#
-# To deploy:
-#
-# kubectl apply -f scripts/deployment.yml
-#
-#
 
-
-#deployment details for loading deakin-library image (book_catalog)
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -26,22 +18,24 @@ spec:
       containers:
       - name: deakin-book-catalog
         image: $CONTAINER_REGISTRY/deakin-book-catalog:$VERSION
+        
         imagePullPolicy: IfNotPresent 
         env:
         - name: PORT
           value: "4000"
         - name: DATABASE_URL
           value: $DATABASE_URL
+          
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: deakin-library
+  name: deakin-book-catalog
 spec:
   selector:
-    app: deakin-library
+    app: deakin-book-catalog
   type: LoadBalancer
   ports:
     - protocol: TCP
-      port: 31000
+      port: 8000
       targetPort: 4000

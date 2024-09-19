@@ -1,7 +1,5 @@
-#!/bin/bash
 
-# Ensure required environment variables are set
-set -u # or set -o nounset
+set -u 
 : "${CONTAINER_REGISTRY:?CONTAINER_REGISTRY is not set}"
 : "${VERSION:?VERSION is not set}"
 : "${NAME:?NAME is not set}"

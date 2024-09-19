@@ -5,10 +5,10 @@ on:
 
 jobs:
   terraform:
-    name: Terraform Init, Plan, and Apply
+    name: Terraform Actions
     runs-on: ubuntu-latest
 
-    # Environment variables for Terraform and Azure
+    
     env:
       ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
       ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
@@ -16,33 +16,33 @@ jobs:
       ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
 
     steps:
-    # Step 1: Checkout the repository
+    
     - name: Checkout code
       uses: actions/checkout@v4
 
-    # Step 2: Login to Azure
+    
     - name: Azure Login
       uses: azure/login@v1
       with:
         creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-    # Step 3: Set up Terraform CLI
+   
     - name: Setup Terraform
       uses: hashicorp/setup-terraform@v2
       with:
         terraform_version: 1.5.6
 
-    # Step 4: Terraform Init (initializes the working directory)
+    
     - name: Terraform Init
-      working-directory: ./scripts/terraform # Replace with your folder path
+      working-directory: ./scripts/terraform 
       run: terraform init -upgrade
 
-    # Step 5: Terraform Plan (show changes without applying)
+    
     - name: Terraform Plan
       working-directory: ./scripts/terraform
       run: terraform plan
 
-    # Step 6: Terraform Apply (apply changes if required)
+    
     - name: Terraform Apply
       working-directory: ./scripts/terraform
       run: terraform apply -auto-approve

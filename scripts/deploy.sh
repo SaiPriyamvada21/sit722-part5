@@ -1,5 +1,5 @@
 
-set -u # or set -o nounset
+set -u 
 : "$CONTAINER_REGISTRY"
 : "$DIRECTORY"
 : "$VERSION"

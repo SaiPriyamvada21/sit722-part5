@@ -1,6 +1,4 @@
-#!/bin/bash
 
-# Print the parameters
 echo "Pushing Docker image with the following parameters:"
 echo "CONTAINER_REGISTRY: $CONTAINER_REGISTRY"
 echo "VERSION: $VERSION"
