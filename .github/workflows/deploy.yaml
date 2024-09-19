@@ -105,8 +105,10 @@ jobs:
           VERSION: ${{ github.sha }}
         run: ./scripts/build-image.sh
 
-      # Publish Docker image
-      - name: Publish
+      - name: Push Docker images
+        env:
+          CONTAINER_REGISTRY: ${{ env.CONTAINER_REGISTRY }}
+          VERSION: ${{ github.sha }}
         run: ./scripts/push-image.sh
 
 
