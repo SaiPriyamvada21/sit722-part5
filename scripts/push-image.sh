@@ -1,9 +1,11 @@
-
-
 #!/bin/bash
 
 # Exit the script immediately if any command fails
 set -e
+
+# Debugging - print the values
+echo "CONTAINER_REGISTRY: $CONTAINER_REGISTRY"
+echo "VERSION: $VERSION"
 
 # Check if environment variables are set
 if [ -z "$CONTAINER_REGISTRY" ]; then
@@ -16,6 +18,6 @@ if [ -z "$VERSION" ]; then
   exit 1
 fi
 
-# Push Docker images to the container registry
-docker push "$CONTAINER_REGISTRY.azurecr.io/book_catalog:$VERSION"
-docker push "$CONTAINER_REGISTRY.azurecr.io/inventory_management:$VERSION"
+# Ensure the container registry URL has no extra spaces and is formatted correctly
+docker push "${CONTAINER_REGISTRY}.azurecr.io/book_catalog:$VERSION"
+docker push "${CONTAINER_REGISTRY}.azurecr.io/inventory_management:$VERSION"
