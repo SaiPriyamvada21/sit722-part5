@@ -10,9 +10,9 @@ services:
       dockerfile: Dockerfile
     container_name: deakin-book_catalog
     ports:
-     - "8000:8000"
+     - "4000:4000"
     environment:
-      - PORT=8000
+      - PORT=4000
       - DATABASE_URL=postgresql://part5:UmveLzdhXrPJrlvfZ95a2i0vIZxwohwR@dpg-crk2ksbtq21c73a99jhg-a.oregon-postgres.render.com/part_5
     restart: "no"
 
@@ -23,8 +23,8 @@ services:
       dockerfile: Dockerfile
     container_name: deakin-inventory
     ports:
-     - "8001:8000"
+     - "5000:5000"
     environment:
-      - PORT=8001
+      - PORT=5000
       - DATABASE_URL=postgresql://part5:UmveLzdhXrPJrlvfZ95a2i0vIZxwohwR@dpg-crk2ksbtq21c73a99jhg-a.oregon-postgres.render.com/part_5
     restart: "no"

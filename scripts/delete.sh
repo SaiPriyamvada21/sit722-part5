@@ -1,4 +1,10 @@
-# Destroys the microservices on Kubernetes.
-# ./scripts/delete.sh
+# 
+# Remove containers from Kubernetes.
+#
+# Usage:
+#
+#   ./scripts/delete.sh
+#
 
-envsubst < ./scripts/kubernetes/deploy.yaml | kubectl delete -f -
+kubectl delete -f kubernetes/book_catalog_deployment.yaml
+kubectl delete -f kubernetes/inventory_management_deployment.yaml

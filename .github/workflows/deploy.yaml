@@ -1,128 +1,48 @@
-# GitHub Actions workflow.
-# Automatically deploys the microservices to Kubernetes on push to master branch.
-name: Deploy Deakin Library App
+name: Terraform Build
 
 on:
-  # Deploys the microservice on push to the master branch of this code repository.
-  push: 
-    branches:
-      - main
-
-  # Allows deployment to be invoked manually through the GitHub Actions user interface.
-  workflow_dispatch: 
+  workflow_dispatch:
 
 jobs:
-  deploy:
+  terraform:
+    name: Terraform Init, Plan, and Apply
     runs-on: ubuntu-latest
 
+    # Environment variables for Terraform and Azure
     env:
-      VERSION: ${{ github.sha }}
+      ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
+      ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
+      ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
+      ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
 
     steps:
-      - uses: actions/checkout@v3
+    # Step 1: Checkout the repository
+    - name: Checkout code
+      uses: actions/checkout@v4
 
-      # Set up Terraform
-      - name: Set up Terraform
-        uses: hashicorp/setup-terraform@v2
-        with:
-          terraform_version: 1.5.6 
+    # Step 2: Login to Azure
+    - name: Azure Login
+      uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-      # Initialize Terraform
-      - name: Terraform Init
-        working-directory: ./scripts/terraform
-        run: terraform init -upgrade
+    # Step 3: Set up Terraform CLI
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v2
+      with:
+        terraform_version: 1.5.6
 
-      # Apply Terraform configuration
-      - name: Terraform Apply
-        working-directory: ./scripts/terraform
-        run: terraform apply -auto-approve
-        env:
-          ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
-          ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
-          ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
-          ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
+    # Step 4: Terraform Init (initializes the working directory)
+    - name: Terraform Init
+      working-directory: ./scripts/terraform # Replace with your folder path
+      run: terraform init
 
-      # Login to Azure
-      - name: Azure Login
-        uses: azure/login@v2
-        with:
-          creds: ${{ secrets.AZURE_CREDENTIALS }}
+    # Step 5: Terraform Plan (show changes without applying)
+    - name: Terraform Plan
+      working-directory: ./scripts/terraform
+      run: terraform plan
 
-      # Set up kubectl
-      - name: Set up kubectl
-        uses: tale/kubectl-action@v1
-        with:
-          base64-kube-config: ${{ secrets.KUBE_CONFIG_BASE64 }}
-          kubectl-version: v1.24.2
-
-      # Get Terraform Outputs
-      - name: Get Terraform Outputs
-        id: outputs
-        working-directory: ./scripts/terraform
-        run: |
-          echo "acr_login_url=$(terraform output -raw acr_login_url | grep -v "::debug")" >> $GITHUB_ENV
-          echo "acr_username=$(terraform output -raw acr_username | grep -v "::debug")" >> $GITHUB_ENV
-          echo "acr_password=$(terraform output -raw acr_password | grep -v "::debug")" >> $GITHUB_ENV
-          echo "aks_kubeconfig=$(terraform output -raw aks_kubeconfig | grep -v "::debug")" >> $GITHUB_ENV
-
-      # Install GitHub CLI
-      - name: Install GitHub CLI
-        run: |
-          curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo tee /usr/share/keyrings/githubcli-archive-keyring.gpg > /dev/null
-          echo "deb [arch=amd64 signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null
-          sudo apt update
-          sudo apt install gh
-
-      # Authenticate GitHub CLI
-      - name: Authenticate GitHub CLI
-        run: |
-          echo "${{ secrets.SECRETS_MODIFY_TOKEN }}" | gh auth login --with-token
-
-    
-      # Create GitHub Secrets from Outputs
-      - name: Create GitHub Secrets
-        run: |
-          echo "Creating or updating secrets in GitHub repository"
-          gh secret set CONTAINER_REGISTRY -b "${{ env.acr_login_url }}"
-          gh secret set REGISTRY_UN -b "${{ env.acr_username }}"
-          gh secret set REGISTRY_PW -b "${{ env.acr_password }}"
-          gh secret set KUBE_CONFIG -b "${{ env.aks_kubeconfig }}"
-
-      # Set up Docker
-      - name: Set up Docker
-        uses: docker/setup-buildx-action@v2
-
-      # Install Docker Compose
-      - name: Install Docker Compose
-        run: |
-          sudo curl -L "https://github.com/docker/compose/releases/download/$(curl -s https://api.github.com/repos/docker/compose/releases/latest | jq -r .tag_name)/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-          sudo chmod +x /usr/local/bin/docker-compose
-
-      # Build Docker image
-      - name: Build
-        env:
-          CONTAINER_REGISTRY: ${{ secrets.CONTAINER_REGISTRY }}
-          VERSION: ${{ github.sha }}
-        run: ./scripts/build-image.sh
-
-      - name: Push Docker images
-        env:
-          CONTAINER_REGISTRY: ${{ secrets.CONTAINER_REGISTRY }}
-          VERSION: ${{ github.sha }}
-        run: ./scripts/push-image.sh
-
-
-      # Deploy the microservice
-      - name: Deploy
-        env:
-          CONTAINER_REGISTRY: ${{ secrets.CONTAINER_REGISTRY }}
-          VERSION: ${{ github.sha }}
-        run: ./scripts/deploy.sh
-
-      # Get Kubernetes Services
-      - name: Get Kubernetes Services
-        run: kubectl get services
-
-      # Get Kubernetes Pods
-      - name: Get Kubernetes Pods
-        run: kubectl get pods
+    # Step 6: Terraform Apply (apply changes if required)
+    - name: Terraform Apply
+      working-directory: ./scripts/terraform
+      run: terraform apply -auto-approve

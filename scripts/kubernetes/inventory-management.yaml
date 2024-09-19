@@ -5,43 +5,42 @@
 #
 #
 
-
 #deployment details for loading deakin-library image (book_catalog)
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: deakin-book_catalog
+  name: deakin-inventory
   labels:
-    app: deakin-book_catalog
+    app: deakin-inventory
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: deakin-book_catalog
+      app: deakin-inventory
   template:
     metadata:
       labels:
-        app: deakin-book_catalog
+        app: deakin-inventory
     spec:
       containers:
-      - name: deakin-book_catalog
-        image: $CONTAINER_REGISTRY/deakin-book_catalog:$VERSION
+      - name: deakin-inventory
+        image: $CONTAINER_REGISTRY/deakin-inventory:$VERSION
         imagePullPolicy: IfNotPresent 
         env:
         - name: PORT
-          value: "4000"
+          value: "5000"
         - name: DATABASE_URL
           value: $DATABASE_URL
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: deakin-library
+  name: deakin-inventory
 spec:
   selector:
-    app: deakin-library
+    app: deakin-inventory
   type: LoadBalancer
   ports:
     - protocol: TCP
-      port: 31000
-      targetPort: 4000
+      port: 32000
+      targetPort: 5000
