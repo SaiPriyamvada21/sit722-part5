@@ -17,7 +17,7 @@ output "acr_password" {
 
 # Outputs for Azure Kubernetes Services (AKS)
 output "aks_kubeconfig" {
-  value       = base64encode(azurerm_kubernetes_cluster.cluster.kube_config_raw)
+  value       = base64encode(azurerm_kubernetes_cluster.cluster.kube_config)
   # Ensure sensitive output for security
   sensitive   = true
   description = "The kubeconfig for AKS in base64-encoded format."
