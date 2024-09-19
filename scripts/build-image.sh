@@ -15,4 +15,4 @@ echo "NAME: $NAME"
 echo "DIRECTORY: $DIRECTORY"
 
 # Build the Docker image
-docker buildx -t "${CONTAINER_REGISTRY}/${NAME}:${VERSION}" --file ./${DIRECTORY}/Dockerfile ./${DIRECTORY}
+docker build -t "${CONTAINER_REGISTRY}/${NAME}:${VERSION}" --file ./${DIRECTORY}/Dockerfile ./${DIRECTORY}
