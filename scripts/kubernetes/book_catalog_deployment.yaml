@@ -10,22 +10,22 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: deakin-book_catalog
+  name: deakin-book-catalog
   labels:
-    app: deakin-book_catalog
+    app: deakin-book-catalog
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: deakin-book_catalog
+      app: deakin-book-catalog
   template:
     metadata:
       labels:
-        app: deakin-book_catalog
+        app: deakin-book-catalog
     spec:
       containers:
-      - name: deakin-book_catalog
-        image: $CONTAINER_REGISTRY/deakin-book_catalog:$VERSION
+      - name: deakin-book-catalog
+        image: $CONTAINER_REGISTRY/deakin-book-catalog:$VERSION
         imagePullPolicy: IfNotPresent 
         env:
         - name: PORT
