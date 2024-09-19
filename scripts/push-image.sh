@@ -1,5 +1,9 @@
 set -u # or set -o nounset
 : "$CONTAINER_REGISTRY"
+: "$VERSION"
+: "$REGISTRY_UN"
+: "$REGISTRY_PW"
+: "$NAME"
 
-docker buildx build --platform linux/amd64 -t $CONTAINER_REGISTRY/book_catalog:latest --file ./book_catalog/Dockerfile .
-docker buildx build --platform linux/amd64 -t $CONTAINER_REGISTRY/inventory_management:latest --file ./inventory_management/Dockerfile .
+echo $REGISTRY_PW | docker login $CONTAINER_REGISTRY --username $REGISTRY_UN --password-stdin
+docker push $CONTAINER_REGISTRY/$NAME:$VERSION
